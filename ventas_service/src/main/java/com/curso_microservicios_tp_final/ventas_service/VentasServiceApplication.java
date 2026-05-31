@@ -1,4 +1,4 @@
-package com.curso_microservicios_tp_final.productos_service;
+package com.curso_microservicios_tp_final.ventas_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ProductosServiceApplication {
+public class VentasServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProductosServiceApplication.class, args);
+		SpringApplication.run(VentasServiceApplication.class, args);
 	}
 
 }

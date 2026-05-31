@@ -1,10 +1,10 @@
-package com.curso_microservicios_tp_final.eureka_sv;
+package com.curso_microservicios_tp_final.ventas_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaSvApplicationTests {
+class VentasServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

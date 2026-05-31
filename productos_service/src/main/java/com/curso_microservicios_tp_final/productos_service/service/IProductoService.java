@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IProductoService {
     List<Producto> obtenerProductos();
+    Producto obtenerProducto(Long codigo_producto);
+    Producto crearProducto(Producto producto);
 }
