@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
+//@Embeddable
 public class ProductoDTO {
     private Long codigo_producto;
     private String nombre;

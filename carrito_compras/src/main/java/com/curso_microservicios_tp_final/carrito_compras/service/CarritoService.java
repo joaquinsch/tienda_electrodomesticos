@@ -27,14 +27,15 @@ public class CarritoService implements ICarritoService {
         Carrito carritoAGuardar = new Carrito();
 
         List<ProductoDTO> productosVerificados = obtenerProductos(carritoDTO);
+
         carritoAGuardar.setPrecio_total(obtenerPrecioTotal(productosVerificados));
-        carritoAGuardar.setLista_productos(productosVerificados);
+        carritoAGuardar.setLista_codigo_productos(obtenerIdsProductos(productosVerificados));
         Carrito guardado = carritoRepository.save(carritoAGuardar);
 
         CarritoResponseDTO devuelto = new CarritoResponseDTO();
         devuelto.setId_carrito(guardado.getId_carrito());
         devuelto.setPrecio_total(guardado.getPrecio_total());
-        devuelto.setLista_productos(guardado.getLista_productos());
+        devuelto.setLista_ids_productos(guardado.getLista_codigo_productos());
         return devuelto;
 
     }
@@ -47,6 +48,14 @@ public class CarritoService implements ICarritoService {
             productosRecuperados.add(actual);
         }
         return productosRecuperados;
+    }
+
+    private List<Long> obtenerIdsProductos(List<ProductoDTO> productos) {
+        List<Long> ids = new ArrayList<>();
+        for (ProductoDTO prod : productos) {
+            ids.add(prod.getCodigo_producto());
+        }
+        return ids;
     }
 
     private Double obtenerPrecioTotal(List<ProductoDTO> productos) {
