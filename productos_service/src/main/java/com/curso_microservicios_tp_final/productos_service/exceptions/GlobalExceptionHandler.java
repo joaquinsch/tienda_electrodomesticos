@@ -1,6 +1,7 @@
 package com.curso_microservicios_tp_final.productos_service.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleProductoInexistenteError(ProductoInexistenteError e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(new ApiError(e.getMessage()));
     }
 }
