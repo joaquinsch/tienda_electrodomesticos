@@ -1,5 +1,7 @@
 package com.curso_microservicios_tp_final.carrito_compras.service;
 
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoDTO;
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoResponseDTO;
 import com.curso_microservicios_tp_final.carrito_compras.dto.ProductoDTO;
 import com.curso_microservicios_tp_final.carrito_compras.model.Carrito;
 import com.curso_microservicios_tp_final.carrito_compras.repository.CarritoRepository;
@@ -21,20 +23,39 @@ public class CarritoService implements ICarritoService {
     }
 
     @Override
-    public Carrito crearCarrito(Carrito carrito) {
-        List<ProductoDTO> productosVerificados = obtenerProductos(carrito);
-        carrito.setLista_productos(productosVerificados);
-        return carritoRepository.save(carrito);
+    public CarritoResponseDTO crearCarrito(CarritoDTO carritoDTO) {
+        Carrito carritoGuardado = new Carrito();
+
+        List<ProductoDTO> productosVerificados = obtenerProductos(carritoDTO);
+        carritoGuardado.setPrecio_total(obtenerPrecioTotal(carritoDTO));
+        carritoGuardado.setLista_productos(productosVerificados);
+        Carrito guardado = carritoRepository.save(carritoGuardado);
+
+        CarritoResponseDTO devuelto = new CarritoResponseDTO();
+        devuelto.setId_carrito(carritoGuardado.getId_carrito());
+        devuelto.setPrecio_total(carritoGuardado.getPrecio_total());
+        devuelto.setLista_productos(carritoGuardado.getLista_productos());
+        return devuelto;
+
     }
 
-    private List<ProductoDTO> obtenerProductos(Carrito carrito) {
+    private List<ProductoDTO> obtenerProductos(CarritoDTO carrito) {
         List<ProductoDTO> productosRecuperados = new ArrayList<>();
-        for (ProductoDTO prod : carrito.getLista_productos()){
+        for (Long codigo_producto : carrito.getLista_productos()){
             // si no lo encuentra tira una excepcion
-            ProductoDTO actual = productosAPIClient.obtenerProducto(prod.getCodigo_producto());
+            ProductoDTO actual = productosAPIClient.obtenerProducto(codigo_producto);
             productosRecuperados.add(actual);
         }
         return productosRecuperados;
+    }
+
+    private Double obtenerPrecioTotal(CarritoDTO carrito) {
+        List<ProductoDTO> productosRecuperados = obtenerProductos(carrito);
+        Double precio_total = 0.0;
+        for (ProductoDTO prod : productosRecuperados) {
+            precio_total += prod.getPrecio();
+        }
+        return precio_total;
     }
 
 }

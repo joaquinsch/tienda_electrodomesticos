@@ -1,5 +1,7 @@
 package com.curso_microservicios_tp_final.carrito_compras.controller;
 
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoDTO;
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoResponseDTO;
 import com.curso_microservicios_tp_final.carrito_compras.model.Carrito;
 import com.curso_microservicios_tp_final.carrito_compras.service.ICarritoService;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,8 @@ public class CarritoController {
     }
 
     @PostMapping
-    public ResponseEntity<Carrito> crearCarrito(@RequestBody Carrito carrito) {
-        Carrito creado = carritoService.crearCarrito(carrito);
+    public ResponseEntity<CarritoResponseDTO> crearCarrito(@RequestBody CarritoDTO carrito) {
+        CarritoResponseDTO creado = carritoService.crearCarrito(carrito);
         return new ResponseEntity<>(creado, HttpStatus.CREATED);
     }
 }

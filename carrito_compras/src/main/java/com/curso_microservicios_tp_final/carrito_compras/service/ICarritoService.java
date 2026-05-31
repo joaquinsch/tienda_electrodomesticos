@@ -1,8 +1,9 @@
 package com.curso_microservicios_tp_final.carrito_compras.service;
 
 
-import com.curso_microservicios_tp_final.carrito_compras.model.Carrito;
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoDTO;
+import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoResponseDTO;
 
 public interface ICarritoService {
-    Carrito crearCarrito(Carrito carrito);
+    CarritoResponseDTO crearCarrito(CarritoDTO carrito);
 }
