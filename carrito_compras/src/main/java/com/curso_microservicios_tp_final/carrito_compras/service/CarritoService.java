@@ -41,21 +41,16 @@ public class CarritoService implements ICarritoService {
     }
 
     private List<ProductoDTO> obtenerProductos(CarritoDTO carrito) {
-        List<ProductoDTO> productosRecuperados = new ArrayList<>();
-        for (Long codigo_producto : carrito.getLista_productos()){
-            // si no lo encuentra tira una excepcion
-            ProductoDTO actual = productosAPIClient.obtenerProducto(codigo_producto);
-            productosRecuperados.add(actual);
-        }
-        return productosRecuperados;
+        // si no encuentra uno tira una excepcion
+        return productosAPIClient.obtenerProductosDeCarrito(carrito.getLista_codigo_productos());
     }
 
     private List<Long> obtenerIdsProductos(List<ProductoDTO> productos) {
-        List<Long> ids = new ArrayList<>();
+        List<Long> codigos = new ArrayList<>();
         for (ProductoDTO prod : productos) {
-            ids.add(prod.getCodigo_producto());
+            codigos.add(prod.getCodigo_producto());
         }
-        return ids;
+        return codigos;
     }
 
     private Double obtenerPrecioTotal(List<ProductoDTO> productos) {

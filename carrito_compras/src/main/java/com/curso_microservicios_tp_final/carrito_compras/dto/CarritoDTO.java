@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarritoDTO {
-    private List<Long> lista_productos;
+    private List<Long> lista_codigo_productos;
 }

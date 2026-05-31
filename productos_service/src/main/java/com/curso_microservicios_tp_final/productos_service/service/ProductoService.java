@@ -5,11 +5,11 @@ import com.curso_microservicios_tp_final.productos_service.model.Producto;
 import com.curso_microservicios_tp_final.productos_service.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
-public class ProductoService implements IProductoService{
+public class ProductoService implements IProductoService {
 
     private ProductoRepository productoRepository;
 
@@ -25,7 +25,7 @@ public class ProductoService implements IProductoService{
 
     private Producto buscarProducto(Long codigo_producto) {
         return productoRepository.findById(codigo_producto)
-                .orElseThrow(() -> new ProductoInexistenteError("No se encontró el producto con codigo: " + codigo_producto));
+                .orElseThrow(() -> new ProductoInexistenteError("No se encontró el producto con código: " + codigo_producto));
     }
 
     @Override
@@ -36,5 +36,27 @@ public class ProductoService implements IProductoService{
     @Override
     public Producto crearProducto(Producto producto) {
         return productoRepository.save(producto);
+    }
+
+    @Override
+    public List<Producto> obtenerProductosDeCarrito(List<Long> codigo_productos) {
+        List<Producto> productosRecuperados = productoRepository.findAllById(codigo_productos);
+
+        if (productosRecuperados.size() != codigo_productos.size()) {
+            List<Long> encontradosIds = new ArrayList<>();
+            for (Producto p : productosRecuperados) {
+                encontradosIds.add(p.getCodigo_producto());
+            }
+
+            List<Long> noEncontrados = new ArrayList<>();
+            for (Long id : codigo_productos) {
+                if (!encontradosIds.contains(id)) {
+                    noEncontrados.add(id);
+                }
+            }
+
+            throw new ProductoInexistenteError("No se encontraron los productos con códigos: " + noEncontrados);
+        }
+        return productosRecuperados;
     }
 }

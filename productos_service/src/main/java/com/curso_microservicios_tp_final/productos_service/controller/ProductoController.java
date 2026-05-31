@@ -31,9 +31,16 @@ public class ProductoController {
 
     @GetMapping("/{codigo_producto}")
     public ResponseEntity<Producto> obtenerProducto(@PathVariable Long codigo_producto){
-        log.info("Request en el puerto: {}", puerto);
+        //log.info("Request en el puerto: {}", puerto);
         return new ResponseEntity<>(productoService.obtenerProducto(codigo_producto), HttpStatus.OK);
     }
+
+    @GetMapping("/buscados")
+    public ResponseEntity<List<Producto>> obtenerProductosDeCarrito(@RequestParam List<Long> codigo_productos){
+        log.info("Request en el puerto: {}", puerto);
+        return new ResponseEntity<>(productoService.obtenerProductosDeCarrito(codigo_productos), HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto){

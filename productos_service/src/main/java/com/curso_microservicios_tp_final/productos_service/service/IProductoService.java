@@ -8,4 +8,5 @@ public interface IProductoService {
     List<Producto> obtenerProductos();
     Producto obtenerProducto(Long codigo_producto);
     Producto crearProducto(Producto producto);
+    List<Producto> obtenerProductosDeCarrito(List<Long> codigo_productos);
 }
