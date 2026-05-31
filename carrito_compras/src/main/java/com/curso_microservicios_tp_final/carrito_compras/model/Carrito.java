@@ -19,10 +19,12 @@ public class Carrito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_carrito;
     private Double precio_total;
+
+    @ElementCollection
     @CollectionTable(
             name = "carrito_productos",
             joinColumns = @JoinColumn(name = "id_carrito")
     )
-    @Column(name = "codigo_producto")
+    @Column(name = "id_producto")
     private List<Long> lista_codigo_productos;
 }
