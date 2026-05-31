@@ -19,4 +19,12 @@ public class GlobalExceptionHandler {
                 .body(mensaje);
     }
 
+    @ExceptionHandler(CarritoInexistenteError.class)
+    public ResponseEntity<String> handleCarritoInexistenteError(CarritoInexistenteError e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(e.getMessage());
+    }
+
 }

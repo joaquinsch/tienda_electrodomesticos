@@ -3,6 +3,7 @@ package com.curso_microservicios_tp_final.carrito_compras.service;
 import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoDTO;
 import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoResponseDTO;
 import com.curso_microservicios_tp_final.carrito_compras.dto.ProductoDTO;
+import com.curso_microservicios_tp_final.carrito_compras.exceptions.CarritoInexistenteError;
 import com.curso_microservicios_tp_final.carrito_compras.model.Carrito;
 import com.curso_microservicios_tp_final.carrito_compras.repository.CarritoRepository;
 import com.curso_microservicios_tp_final.carrito_compras.repository.ProductosAPIClient;
@@ -26,7 +27,7 @@ public class CarritoService implements ICarritoService {
     public CarritoResponseDTO crearCarrito(CarritoDTO carritoDTO) {
         Carrito carritoAGuardar = new Carrito();
 
-        List<ProductoDTO> productosVerificados = obtenerProductos(carritoDTO);
+        List<ProductoDTO> productosVerificados = productosAPIClient.obtenerProductosDeCarrito(carritoDTO.getLista_codigo_productos());
 
         carritoAGuardar.setPrecio_total(obtenerPrecioTotal(productosVerificados));
         carritoAGuardar.setLista_codigo_productos(obtenerIdsProductos(productosVerificados));
@@ -35,15 +36,27 @@ public class CarritoService implements ICarritoService {
         CarritoResponseDTO devuelto = new CarritoResponseDTO();
         devuelto.setId_carrito(guardado.getId_carrito());
         devuelto.setPrecio_total(guardado.getPrecio_total());
-        devuelto.setLista_ids_productos(guardado.getLista_codigo_productos());
+        devuelto.setLista_productos(productosVerificados);
         return devuelto;
 
     }
 
-    private List<ProductoDTO> obtenerProductos(CarritoDTO carrito) {
-        // si no encuentra uno tira una excepcion
-        return productosAPIClient.obtenerProductosDeCarrito(carrito.getLista_codigo_productos());
+    @Override
+    public CarritoResponseDTO obtenerCarrito(Long id_carrito) {
+        Carrito buscado = buscarCarrito(id_carrito);
+
+        CarritoResponseDTO devuelto = new CarritoResponseDTO();
+        devuelto.setId_carrito(buscado.getId_carrito());
+        devuelto.setPrecio_total(buscado.getPrecio_total());
+        devuelto.setLista_productos(productosAPIClient.obtenerProductosDeCarrito(buscado.getLista_codigo_productos()));
+        return devuelto;
     }
+
+    private Carrito buscarCarrito(Long id_carrito) {
+        return carritoRepository.findById(id_carrito)
+                .orElseThrow(() -> new CarritoInexistenteError("No se encontró el carrito con id: " + id_carrito));
+    }
+
 
     private List<Long> obtenerIdsProductos(List<ProductoDTO> productos) {
         List<Long> codigos = new ArrayList<>();

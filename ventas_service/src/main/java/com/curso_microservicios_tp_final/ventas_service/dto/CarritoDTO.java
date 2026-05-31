@@ -1,4 +1,4 @@
-package com.curso_microservicios_tp_final.carrito_compras.dto;
+package com.curso_microservicios_tp_final.ventas_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CarritoResponseDTO {
+public class CarritoDTO {
     private Long id_carrito;
     private Double precio_total;
     private List<ProductoDTO> lista_productos;
