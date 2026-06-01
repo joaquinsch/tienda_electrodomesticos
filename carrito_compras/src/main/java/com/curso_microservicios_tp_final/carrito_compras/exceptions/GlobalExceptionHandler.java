@@ -23,4 +23,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ComunicacionConProductosError.class)
+    public ResponseEntity<String> handleComunicacionConProductosError(ComunicacionConProductosError e){
+        return ResponseEntity.status(e.getStatus())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(e.getMessage());
+
+    }
+
 }

@@ -4,9 +4,15 @@ import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoDTO;
 import com.curso_microservicios_tp_final.carrito_compras.dto.CarritoResponseDTO;
 import com.curso_microservicios_tp_final.carrito_compras.dto.ProductoDTO;
 import com.curso_microservicios_tp_final.carrito_compras.exceptions.CarritoInexistenteError;
+import com.curso_microservicios_tp_final.carrito_compras.exceptions.ComunicacionConProductosError;
 import com.curso_microservicios_tp_final.carrito_compras.model.Carrito;
 import com.curso_microservicios_tp_final.carrito_compras.repository.CarritoRepository;
 import com.curso_microservicios_tp_final.carrito_compras.repository.ProductosAPIClient;
+import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +30,8 @@ public class CarritoService implements ICarritoService {
     }
 
     @Override
+    @CircuitBreaker(name = "productos-service", fallbackMethod = "fallbackCrearCarrito")
+    @Retry(name = "productos-service")
     public CarritoResponseDTO crearCarrito(CarritoDTO carritoDTO) {
         Carrito carritoAGuardar = new Carrito();
 
@@ -39,6 +47,32 @@ public class CarritoService implements ICarritoService {
         devuelto.setLista_productos(productosVerificados);
         return devuelto;
 
+    }
+
+    public CarritoResponseDTO fallbackCrearCarrito(CarritoDTO carritoDTO, Throwable throwable) {
+        // Desenvolver la excepción real
+        Throwable cause = throwable;
+        while (cause instanceof NoFallbackAvailableException && cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+
+        // Si es 404 o cualquier 4xx -> relanzar como excepción de negocio
+        if (cause instanceof FeignException) {
+            FeignException feignEx = (FeignException) cause;
+            if (feignEx.status() < 500) {
+                // Relanzar con el mismo status que vino de productos-service
+                throw new ComunicacionConProductosError(
+                        feignEx.contentUTF8(),
+                        HttpStatus.valueOf(feignEx.status())
+                );
+            }
+        }
+
+        // Si llegó acá es error de conexión (500+, timeout, etc.) -> SÍ abre el CB
+        throw new ComunicacionConProductosError(
+                "El servicio de productos no está disponible, intente más tarde",
+                HttpStatus.SERVICE_UNAVAILABLE
+        );
     }
 
     @Override
