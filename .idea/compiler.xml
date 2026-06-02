@@ -7,18 +7,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
         <module name="productos_service" />
         <module name="ventas_service" />
         <module name="carrito_compras" />
+        <module name="ventas-service" />
         <module name="eureka-sv" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
       <module name="carrito_compras" options="-parameters" />
       <module name="eureka-sv" options="-parameters" />
       <module name="productos_service" options="-parameters" />
+      <module name="ventas-service" options="-parameters" />
       <module name="ventas_service" options="-parameters" />
     </option>
   </component>
