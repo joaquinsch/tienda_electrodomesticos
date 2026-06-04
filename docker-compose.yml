@@ -1,0 +1,42 @@
+services:
+  eureka-sv:
+    build: ./eureka-sv
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    networks:
+      - 'tienda_electrodomesticos_network'
+  api-gateway:
+    build: ./api-gateway
+    mem_limit: 512m
+    ports:
+      - "443:443"
+    networks:
+      - 'tienda_electrodomesticos_network'
+  productos-service:
+    build: ./productos-service
+    mem_limit: 512m
+    environment:
+      - BD_PASSWORD=${BD_PASSWORD}
+      - SERVER_PORT=${SERVER_PORT}
+    deploy:
+      replicas: 2
+    networks:
+      - 'tienda_electrodomesticos_network'
+  carrito-compras:
+    build: ./carrito-compras
+    mem_limit: 512m
+    ports:
+      - "8082:8082"
+    networks:
+      - 'tienda_electrodomesticos_network'
+  ventas-service:
+    build: ./ventas-service
+    mem_limit: 512m
+    ports:
+      - "8083:8083"
+    networks:
+      - 'tienda_electrodomesticos_network'
+
+networks:
+  tienda_electrodomesticos_network:
