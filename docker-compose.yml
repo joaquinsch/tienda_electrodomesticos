@@ -1,42 +1,97 @@
 services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${BD_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - tienda_electrodomesticos_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${BD_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   eureka-sv:
     build: ./eureka-sv
     mem_limit: 512m
     ports:
       - "8761:8761"
     networks:
-      - 'tienda_electrodomesticos_network'
+      - tienda_electrodomesticos_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
   api-gateway:
     build: ./api-gateway
     mem_limit: 512m
     ports:
       - "443:443"
+    depends_on:
+      eureka-sv:
+        condition: service_healthy
+    environment:
+      - EUREKA_HOST=eureka-sv
     networks:
-      - 'tienda_electrodomesticos_network'
+      - tienda_electrodomesticos_network
   productos-service:
-    build: ./productos-service
+    build: ./productos_service
     mem_limit: 512m
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_healthy
     environment:
       - BD_PASSWORD=${BD_PASSWORD}
-      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_PORT=8081
+      - DB_HOST=mysql
+      - DB_USER=root
+      - EUREKA_HOST=eureka-sv
+      - DDL_AUTO=update
     deploy:
       replicas: 2
     networks:
-      - 'tienda_electrodomesticos_network'
+      - tienda_electrodomesticos_network
   carrito-compras:
-    build: ./carrito-compras
+    build: ./carrito_compras
     mem_limit: 512m
     ports:
       - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_healthy
+    environment:
+      - BD_PASSWORD=${BD_PASSWORD}
+      - DB_HOST=mysql
+      - DB_USER=root
+      - EUREKA_HOST=eureka-sv
+      - DDL_AUTO=update
     networks:
-      - 'tienda_electrodomesticos_network'
+      - tienda_electrodomesticos_network
   ventas-service:
     build: ./ventas-service
     mem_limit: 512m
     ports:
       - "8083:8083"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_healthy
+    environment:
+      - BD_PASSWORD=${BD_PASSWORD}
+      - DB_HOST=mysql
+      - DB_USER=root
+      - EUREKA_HOST=eureka-sv
+      - DDL_AUTO=update
     networks:
-      - 'tienda_electrodomesticos_network'
+      - tienda_electrodomesticos_network
 
 networks:
   tienda_electrodomesticos_network:

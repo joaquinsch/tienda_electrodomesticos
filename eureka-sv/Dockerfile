@@ -1,4 +1,4 @@
 FROM eclipse-temurin:17-jdk-jammy
 ARG JAR_FILE=target/eureka-sv-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app_eureka_sv
+COPY ${JAR_FILE} app_eureka_sv.jar
 ENTRYPOINT ["java", "-jar", "app_eureka_sv.jar"]
