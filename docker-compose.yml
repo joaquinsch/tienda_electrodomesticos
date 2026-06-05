@@ -8,10 +8,11 @@ services:
     networks:
       - tienda_electrodomesticos_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${BD_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${BD_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
   eureka-sv:
     build: ./eureka-sv
     mem_limit: 512m
