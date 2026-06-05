@@ -48,10 +48,10 @@ services:
     environment:
       - BD_PASSWORD=${BD_PASSWORD}
       - SERVER_PORT=8081
-      - DB_HOST=mysql
-      - DB_USER=root
-      - EUREKA_HOST=eureka-sv
-      - DDL_AUTO=update
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - EUREKA_HOST=${EUREKA_HOST}
+      - DDL_AUTO=${DDL_AUTO}
     deploy:
       replicas: 2
     networks:
@@ -68,10 +68,10 @@ services:
         condition: service_healthy
     environment:
       - BD_PASSWORD=${BD_PASSWORD}
-      - DB_HOST=mysql
-      - DB_USER=root
-      - EUREKA_HOST=eureka-sv
-      - DDL_AUTO=update
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - EUREKA_HOST=${EUREKA_HOST}
+      - DDL_AUTO=${DDL_AUTO}
     networks:
       - tienda_electrodomesticos_network
   ventas-service:
@@ -86,10 +86,10 @@ services:
         condition: service_healthy
     environment:
       - BD_PASSWORD=${BD_PASSWORD}
-      - DB_HOST=mysql
-      - DB_USER=root
-      - EUREKA_HOST=eureka-sv
-      - DDL_AUTO=update
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - EUREKA_HOST=${EUREKA_HOST}
+      - DDL_AUTO=${DDL_AUTO}
     networks:
       - tienda_electrodomesticos_network
 
